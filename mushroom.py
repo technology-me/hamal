@@ -110,28 +110,49 @@ def read(file_name, key, language='python', link='@'):
 def delete(file_name, key):
     """删除json指定键"""
     python_text = read(file_name, all)                              # 读取json信息
+    if key == all:                                                  # 如果删除全部
+        python_text = {}                                            # 那么就都删了
+        return(True)                                                # 退出
     if python_text == False:                                        # 读取错误
-        raise MushroomError("'"+key+"'"+' is not in the key of the json file.')# 抛出错误
+        raise MushroomError("'"+key+"'"+' is not a correct file.')  # 抛出错误
     if key in python_text.keys():                                   # 如果key在
         del python_text[key]                                        # 删除
     else:                                                           # 如果key不在
-        raise MushroomError("'"+key+"'"+' is not in the key of the json file.')# 抛出错误
+        raise MushroomError(
+            "'"+key+"'"+' is not in the key of the json file.')     # 抛出错误
     with open(file_name, 'w', encoding='utf-8') as file:            # 打开文件
         file.write(str(json.dumps(python_text)))                    # 写整洁化的文件
 
 
 def write_sheet(file_name, key, row, col, value):
     """写json指定字典表"""
+    row = str(row)                                                  # 化成字符串
+    col = str(col)                                                  # 化成字符串
     private = Private()                                             # 用于self
     python_text = read(file_name, all)                              # 读取json内容
     if python_text == False:                                        # 如果返回false
-        raise MushroomError("'" + file_name + "'" + ' is not a correct file.')# 报错
+        raise MushroomError("'" + file_name + "'" +
+                            ' is not a correct file.')              # 报错
     else:                                                           # 如果不返回false
         if key not in python_text:                                  # 如果key不在json内容里
             python_text[key] = {}                                   # 建立一个字典，以免报错
         Private.write_two_dimensional_dictionary(
             private, python_text[key], row, col, value)             # 输入二维字典
         write(file_name, all, python_text)                          # 写成品
+
+
+def read_sheet(file_name, key, row="", col=""):
+    """读json指定字典表"""
+    row = str(row)                                                  # 化成字符串
+    col = str(col)                                                  # 化成字符串
+    python_text = read(file_name, key, 'python')                    # 读取指定键内容
+    if python_text == False:                                        # 如果文件读取错误
+        raise MushroomError("'" + file_name + "'" +
+                            ' is not a correct file.')              # 报错
+    else:                                                           # 如果正常
+        if row == all or col == all:                                # 如果读取全部
+            return(python_text)                                     # 直接返回
+        return(python_text[row][col])                               # 未被拦截则返回二维字典指定值
 
 
 def mushroom():
