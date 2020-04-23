@@ -18,16 +18,16 @@ class MushroomPrivateFunction():
 
 def view(file_name):
     """一个用于打开json的查看器"""
-    # 定义
+    """定义"""
     window = Tk()                                                   # 定义窗口
     file_text = Text(window)                                        # 定义文本框
     scroll = Scrollbar()                                            # 定义滚动条
-    # 设置窗口
+    """设置窗口"""
     window.title('Json Viewer  ：' + file_name)                     # 窗口标题：Json Viewer
     window.geometry('500x200')                                      # 窗口大小：500x200
     window['background'] = 'white'                                  # 窗口背景色：white
     window.resizable(False, False)                                  # 窗口调整：锁定
-    # 设置文本框
+    """设置文本框"""
     file_text.pack(side='left')                                     # 文本框对齐：左
     file_text.config(yscrollcommand=scroll.set)                     # 文本框关联，滚动条
     json_text = json.dumps(read(file_name, all, 'python'),
@@ -40,10 +40,10 @@ def view(file_name):
         for i in json_text:                                         # 逐行读取json内容
             file_text.insert(END, i)                                # 在最后添加该条信息
     file_text.config(state=DISABLED)                                # 禁止编辑3
-    # 设置滚动条
+    """设置滚动条"""
     scroll.pack(side='right', fill=Y)                               # 滚动条对齐：右；滚动条填充：Y轴
     scroll.config(command=file_text.yview)                          # 滚动条关联：文本框
-    # 开始
+    """开始"""
     window.mainloop()                                               # 启用窗口
     return(json_text)                                               # 返回json内容
 
@@ -85,8 +85,9 @@ def read(file_name, key, language='python', link='@'):
     except FileNotFoundError:                                       # 错误
         return(False)                                               # 不返回
     if os.stat(file_name).st_size == 0:                             # 检测文件是否为空
-        return(False)                                               # 不返回
-    python_text = json.loads(file.read())                           # python化
+        python_text = {}                                            # 建立一个
+    else:                                                           # 不为空
+        python_text = json.loads(file.read())                       # python化
     if key == all:                                                  # 如果读取全部
         if language == 'python':                                    # 如果是python风格
             return(python_text)                                     # 以python字典打印
@@ -155,12 +156,12 @@ def read_sheet(file_name, key, row="", col=""):
         if row == all and col == all:                               # 如果读取全部
             return(python_text)                                     # 直接返回
         elif row == all:                                            # 如果读取全部row
-            return(python_text[col].values())                       # 返回所有列
+            return(list(python_text[col].values()))                 # 返回所有列
         elif col == all:                                            # 如果读取全部col
             col_list = []                                           # 初始化列表
             for i in python_text.keys():                            # 循环所有键
-                col_list.append(python_text[i])                     # 增加对应值
-            return(col_list)                                        # 返回列表
+                col_list.append(python_text[i][row])                     # 增加对应值
+            return(list(col_list))                                  # 返回列表
         return(python_text[row][col])                               # 未被拦截则返回二维字典指定值
 
 
