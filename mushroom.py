@@ -6,7 +6,7 @@ class MushroomError(Exception):                                     # 参数错�
     pass                                                            # 过
 
 
-class Private():
+class MushroomPrivateFunction():
     """用于私有，不以函数的方式给出模块"""
     def write_two_dimensional_dictionary(self, dict_, row, col, value):
         """写二维数组"""
@@ -128,7 +128,7 @@ def write_sheet(file_name, key, row, col, value):
     """写json指定字典表"""
     row = str(row)                                                  # 化成字符串
     col = str(col)                                                  # 化成字符串
-    private = Private()                                             # 用于self
+    private = MushroomPrivateFunction()                             # 用于self
     python_text = read(file_name, all)                              # 读取json内容
     if python_text == False:                                        # 如果返回false
         raise MushroomError("'" + file_name + "'" +
@@ -136,22 +136,31 @@ def write_sheet(file_name, key, row, col, value):
     else:                                                           # 如果不返回false
         if key not in python_text:                                  # 如果key不在json内容里
             python_text[key] = {}                                   # 建立一个字典，以免报错
-        Private.write_two_dimensional_dictionary(
+        MushroomPrivateFunction.write_two_dimensional_dictionary(
             private, python_text[key], row, col, value)             # 输入二维字典
         write(file_name, all, python_text)                          # 写成品
 
 
 def read_sheet(file_name, key, row="", col=""):
     """读json指定字典表"""
-    row = str(row)                                                  # 化成字符串
-    col = str(col)                                                  # 化成字符串
+    if row != all:                                                  # 如果不是all
+        row = str(row)                                              # 化成字符串
+    if col != all:                                                  # 如果不是all
+        col = str(col)                                              # 化成字符串
     python_text = read(file_name, key, 'python')                    # 读取指定键内容
     if python_text == False:                                        # 如果文件读取错误
         raise MushroomError("'" + file_name + "'" +
                             ' is not a correct file.')              # 报错
     else:                                                           # 如果正常
-        if row == all or col == all:                                # 如果读取全部
+        if row == all and col == all:                               # 如果读取全部
             return(python_text)                                     # 直接返回
+        elif row == all:                                            # 如果读取全部row
+            return(python_text[col].values())                       # 返回所有列
+        elif col == all:                                            # 如果读取全部col
+            col_list = []                                           # 初始化列表
+            for i in python_text.keys():                            # 循环所有键
+                col_list.append(python_text[i])                     # 增加对应值
+            return(col_list)                                        # 返回列表
         return(python_text[row][col])                               # 未被拦截则返回二维字典指定值
 
 
