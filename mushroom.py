@@ -2,6 +2,7 @@ import json
 import os
 from tkinter import *
 
+
 class MushroomError(Exception):                                     # 参数错误类
     pass                                                            # 过
 
@@ -167,8 +168,6 @@ def read_sheet(file_name, key, row="", col=""):
 
 
 class mushroom():                                                   # 面向对象式调用
-    file_name = None                                                #
-
     def __init__(self, file_name):
         self.file_name = file_name
 
