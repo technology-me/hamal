@@ -16,7 +16,7 @@ class MushroomPrivateFunction():
             dict_.update({row: {col: value}})                       # 同时加行与列
 
 
-def view(file_name):
+def view(file_name,value=False):
     """一个用于打开json的查看器"""
     """定义"""
     window = Tk()                                                   # 定义窗口
@@ -45,7 +45,8 @@ def view(file_name):
     scroll.config(command=file_text.yview)                          # 滚动条关联：文本框
     """开始"""
     window.mainloop()                                               # 启用窗口
-    return(json_text)                                               # 返回json内容
+    if value:                                                       # 如果确认返回
+        return(json_text)                                           # 返回json内容
 
 
 def write(file_name, key, value):
@@ -165,8 +166,26 @@ def read_sheet(file_name, key, row="", col=""):
         return(python_text[row][col])                               # 未被拦截则返回二维字典指定值
 
 
-def mushroom():
-    print('The mushroom library for python')
-    print('Version： 1.0.0.0')
-    print('Producer: Smith Lee')
-    print('Made In China')
+class mushroom():                                                   # 面向对象式调用
+    file_name = None                                                #
+
+    def __init__(self, file_name):
+        self.file_name = file_name
+
+    def read(self, key, language='python', link='@'):
+        return(read(self.file_name, key, language, link))
+
+    def write(self, key, value):
+        return(write(self.file_name, key, value))
+
+    def delete(self, key):
+        return(delete(self.file_name, key))
+
+    def read_sheet(self, key, row=all, col=all):
+        return(read_sheet(self.file_name, key, row, col))
+
+    def write_sheet(self, key, row, col, value):
+        return(write_sheet(self.file_name, key, row, col, value))
+
+    def view(self, value=False):
+               return(self.file_name, value)
