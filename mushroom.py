@@ -7,17 +7,7 @@ class MushroomError(Exception):                                     # 参数错�
     pass                                                            # 过
 
 
-class MushroomPrivateFunction():
-    """用于私有，不以函数的方式给出模块"""
-    def write_two_dimensional_dictionary(self, dict_, row, col, value):
-        """写二维数组"""
-        if row in dict_:                                            # 如果行在dict_中
-            dict_[row].update({col: value})                         # 直接在行里加列的字典
-        else:                                                       # 否则
-            dict_.update({row: {col: value}})                       # 同时加行与列
-
-
-def view(file_name,value=False):
+def view(file_name, value=False):
     """一个用于打开json的查看器"""
     """定义"""
     window = Tk()                                                   # 定义窗口
@@ -106,8 +96,7 @@ def read(file_name, key, language='python', link='@'):
                     return(read(file_name, python_text[key][1:], 'python', link))# 运用递归算法，寻求最终值
             return(python_text[key])                                # 返回这个键的值
         else:                                                       # 如果键不在json的键中
-            raise MushroomError(
-                "'" + key + "'" + ' is not in the json file')       # 抛出错误
+            return({})                                              # 返回空字典
 
 
 def delete(file_name, key):
@@ -131,17 +120,16 @@ def write_sheet(file_name, key, row, col, value):
     """写json指定字典表"""
     row = str(row)                                                  # 化成字符串
     col = str(col)                                                  # 化成字符串
-    private = MushroomPrivateFunction()                             # 用于self
-    python_text = read(file_name, all)                              # 读取json内容
+    python_text = read(file_name, key)                              # 读取json内容
     if python_text == False:                                        # 如果返回false
         raise MushroomError("'" + file_name + "'" +
                             ' is not a correct file.')              # 报错
     else:                                                           # 如果不返回false
-        if key not in python_text:                                  # 如果key不在json内容里
-            python_text[key] = {}                                   # 建立一个字典，以免报错
-        MushroomPrivateFunction.write_two_dimensional_dictionary(
-            private, python_text[key], row, col, value)             # 输入二维字典
-        write(file_name, all, python_text)                          # 写成品
+        if row in python_text:                                      # 如果行在dict_中
+            python_text[row].update({col: value})                   # 直接在行里加列的字典
+        else:                                                       # 否则
+            python_text.update({row: {col: value}})                 # 同时加行与列
+        write(file_name, key, python_text)                          # 写成品
 
 
 def read_sheet(file_name, key, row="", col=""):
@@ -162,29 +150,46 @@ def read_sheet(file_name, key, row="", col=""):
         elif col == all:                                            # 如果读取全部col
             col_list = []                                           # 初始化列表
             for i in python_text.keys():                            # 循环所有键
-                col_list.append(python_text[i][row])                     # 增加对应值
+                col_list.append(python_text[i][row])                # 增加对应值
             return(list(col_list))                                  # 返回列表
         return(python_text[row][col])                               # 未被拦截则返回二维字典指定值
 
 
-class mushroom():                                                   # 面向对象式调用
+def size(file_name):
+    """取文件字节大小"""
+    return(os.stat(file_name).st_size)                              # 调用库文件
+
+
+class mushroom():
+    """面向对象式调用"""
     def __init__(self, file_name):
-        self.file_name = file_name
+        """用init属性初始化并赋值"""
+        self.file_name = file_name                                  # 赋值
 
     def read(self, key, language='python', link='@'):
-        return(read(self.file_name, key, language, link))
+        """读json文件"""
+        return(read(self.file_name, key, language, link))           # 调用函数
 
     def write(self, key, value):
-        return(write(self.file_name, key, value))
+        """写json文件"""
+        return(write(self.file_name, key, value))                   # 调用函数
 
     def delete(self, key):
-        return(delete(self.file_name, key))
+        """删除json指定键"""
+        return(delete(self.file_name, key))                         # 调用函数
 
     def read_sheet(self, key, row=all, col=all):
-        return(read_sheet(self.file_name, key, row, col))
+        """读json指定字典表"""
+        return(read_sheet(self.file_name, key, row, col))           # 调用函数
 
     def write_sheet(self, key, row, col, value):
-        return(write_sheet(self.file_name, key, row, col, value))
+        """写json指定字典表"""
+        return(write_sheet(self.file_name, key, row, col, value))   # 调用函数
 
     def view(self, value=False):
-               return(self.file_name, value)
+        """一个用于打开json的查看器"""
+        return(self.file_name, value)                               # 调用函数
+
+    def size(self):
+        """取文件字节大小"""
+        return(os.stat(self.file_name).st_size)                     # 直接用库
