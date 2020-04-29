@@ -2,6 +2,10 @@ import json
 import os
 from tkinter import *
 
+FILE_NOT_FOUND = '<FileNotFound Mushroom>'
+FILE_NO_TEXT = '<FileNoText Mushroom>'
+
+
 
 class MushroomError(Exception):                                     # 参数错误类
     pass                                                            # 过
@@ -44,29 +48,18 @@ def write(file_name, key, value):
     """写json文件"""
     add_file = False                                                # 是否增加文件：否
     python_text = read(file_name, all, 'python')                    # 读取该文件，如果没有返回false
-    if python_text == False:                                        # 如果返回false
-        if isinstance(value, tuple):                                # 禁用元组增改法
-            raise MushroomError(
-                'the file was not found, so the quick addition and subtraction of tuples cannot be used.')  # 抛出异常
+    if python_text == FILE_NOT_FOUND:                               # 如果返回false
         del python_text                                             # 删掉false
         python_text = {}                                            # 变成字典
         add_file = True                                             # 增加了文件，改为真
+    if python_text ==FILE_NO_TEXT:                                  # 如果json无内容
+        python_text = {}                                            # 创建字典
     with open(file_name, 'w', encoding='utf-8') as file:            # 打开文件
-        if key == all:                                              # 如果写入全部（将会覆盖）
+        if key == all and isinstance(value,dict):                   # 如果写入全部（将会覆盖）
             file.write(str(json.dumps(value)))                      # 覆盖写入
         else:                                                       # 如果不是all
-            if python_text == {}:                                   # 如果啥东西都没有
-                python_text[key] = value                            # 将字典普通赋值
-            else:                                                   # 否则
-                if isinstance(value, tuple):                        # 检测是否为元组赋值型
-                    if isinstance(python_text[key], dict):          # 检验key是否字典
-                        python_text[key][value[0]] = value[-1]      # 元组赋值
-                    else:                                           # key不是字典要报错
-                        raise MushroomError(
-                            'the key was not dict, so the quick addition and subtraction of tuples cannot be used.')  # 抛出错误
-                else:                                               # 如果不是
-                    python_text[key] = value                        # 将字典普通赋值
-                file.write(str(json.dumps(python_text)))            # 写整洁化的文件
+            python_text[key] = value                                # 将字典普通赋值
+            file.write(str(json.dumps(python_text)))                # 写整洁化的文件
     return(add_file)                                                # 返回是否增加了文件
 
 
@@ -75,9 +68,9 @@ def read(file_name, key, language='python', link='@'):
     try:                                                            # 检测
         file = open(file_name, 'r', encoding='utf-8')               # 打开json文件
     except FileNotFoundError:                                       # 错误
-        return(False)                                               # 不返回
+        return(FILE_NOT_FOUND)                                      # 返回错误信息
     if os.stat(file_name).st_size == 0:                             # 检测文件是否为空
-        python_text = {}                                            # 建立一个
+        return(FILE_NO_TEXT)                                        # 错误
     else:                                                           # 不为空
         python_text = json.loads(file.read())                       # python化
     if key == all:                                                  # 如果读取全部
@@ -105,7 +98,7 @@ def delete(file_name, key):
     if key == all:                                                  # 如果删除全部
         python_text = {}                                            # 那么就都删了
         return(True)                                                # 退出
-    if python_text == False:                                        # 读取错误
+    if python_text == FILE_NOT_FOUND:                               # 读取错误
         raise MushroomError("'"+key+"'"+' is not a correct file.')  # 抛出错误
     if key in python_text.keys():                                   # 如果key在
         del python_text[key]                                        # 删除
@@ -121,7 +114,9 @@ def write_sheet(file_name, key, row, col, value):
     row = str(row)                                                  # 化成字符串
     col = str(col)                                                  # 化成字符串
     python_text = read(file_name, key)                              # 读取json内容
-    if python_text == False:                                        # 如果返回false
+    if python_text == FILE_NO_TEXT:                                 # 如果json无内容
+        python_text = {}                                            # 创建字典
+    if python_text == FILE_NOT_FOUND:                               # 如果返回false
         raise MushroomError("'" + file_name + "'" +
                             ' is not a correct file.')              # 报错
     else:                                                           # 如果不返回false
@@ -139,9 +134,11 @@ def read_sheet(file_name, key, row="", col=""):
     if col != all:                                                  # 如果不是all
         col = str(col)                                              # 化成字符串
     python_text = read(file_name, key, 'python')                    # 读取指定键内容
-    if python_text == False:                                        # 如果文件读取错误
+    if python_text == FILE_NOT_FOUND:                               # 如果文件读取错误
         raise MushroomError("'" + file_name + "'" +
                             ' is not a correct file.')              # 报错
+    elif python_text == FILE_NO_TEXT:                               # 如果json无内容
+        python_text = {}                                            # 创建字典
     else:                                                           # 如果正常
         if row == all and col == all:                               # 如果读取全部
             return(python_text)                                     # 直接返回
