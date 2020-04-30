@@ -67,4 +67,8 @@ def main():
     times[0] = numpy.mean(times)
     times.append(test.read('replace'))
     test.write('replace',numpy.mean(times))
+
+
+file.decode()
 main()
+file.encode()

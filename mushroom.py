@@ -1,5 +1,6 @@
 import json
 import os
+import base64
 from tkinter import *
 
 FILE_NOT_FOUND = '<FileNotFound Mushroom>'
@@ -11,13 +12,16 @@ class MushroomError(Exception):                                     # 参数错�
 
 def linker(file_name,link_text):
     """内部函数，用于link双函数递归溯源"""
+    read_text = ''
     link_text = link_text[1:]                                       # 截取第二个字符及以后的字符
     if ',' in link_text:                                            # 如果有“，”分隔符
-        link_text = link_text.split(',')                            # 分开
-        if len(link_text) == 3:                                     # 如果有三项
-            return(read_sheet(file_name,link_text[0],link_text[1],link_text[2]))# 用表读取函数
+        link_text_split = link_text.split(',')                      # 分开
+        if len(link_text_split) == 3:                               # 如果有三项
+            read_text = read_sheet(file_name,link_text_split[0],link_text_split[1],link_text_split[2])# 用表读取函数
     else:                                                           # 如果没有“，”分隔符
-        return(read(file_name,link_text))                           # 用字读取函数
+        read_text = read(file_name,link_text)                       # 用字读取函数
+    if read_text[1:] == link_text:                                  # 如果引用自己
+        raise MushroomError('Do you want to refer to yourself and create infinite recursion?')# 抛出错误
 
 def view(file_name, value=False):
     """一个用于打开json的查看器"""
@@ -91,7 +95,7 @@ def read(file_name, key, language='python', link='@'):
     else:                                                           # 如果不是all
         if key in python_text.keys():                               # 如果键在json的键中
             if isinstance(python_text[key], str):                   # 如果值是str
-                if python_text[key][0] == link[0]:                  # 如果str的值首字母是‘@’（必须是分开的，否则第二个if会并报错）
+                if python_text[key][0] == link[0]:                  # 如果str的值首字母是link首字母（必须是分开的，否则第二个if会并报错）
                     return(linker(file_name,python_text[key]))      # 运用递归算法，寻求最终值
             return(python_text[key])                                # 返回这个键的值
         else:                                                       # 如果键不在json的键中
@@ -172,6 +176,27 @@ def size(file_name):
     """取文件字节大小"""
     return(os.stat(file_name).st_size)                              # 调用库文件
 
+def encode(file_name):
+    """加密文件"""
+    f=open(file_name,encoding='utf-8')                              # 读取文件
+    content=f.read()                                                # 取出数据
+    content1=content.encode(encoding='utf-8')                       # 转化格式
+    content2=base64.b64encode(content1)                             # 开始编码
+    f.close()                                                       # 关闭文件
+    with open(file_name, 'wb+') as f:                               # 打开文件
+       f.write(content2)                                            # 写回文件
+
+def decode(file_name):
+    """解密文件"""
+    f=open(file_name,encoding='utf-8')                              # 读取文件
+    content=f.read()                                                # 取出数据
+    try:                                                            # 准备测试
+        content1=base64.b64decode(content)                          # 开始解码
+    except:                                                         # 如果错误
+        raise MushroomError("File '"+file_name+"' can not decode.") # 抛出定义
+    with open(file_name, 'wb+') as f:                               # 打开文件
+        f.write(content1)                                           # 写回文件
+
 class mushroom():
     """面向对象式调用"""
     def __init__(self, file_name):
@@ -209,3 +234,11 @@ class mushroom():
     def size(self):
         """取文件字节大小"""
         return(os.stat(self.file_name).st_size)                     # 直接用库
+
+    def encode(self):
+        """加密文件"""
+        return(encode(self.file_name))
+
+    def decode(self):
+        """解密文件"""
+        return(decode(self.file_name))
