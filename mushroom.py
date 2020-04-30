@@ -4,12 +4,20 @@ from tkinter import *
 
 FILE_NOT_FOUND = '<FileNotFound Mushroom>'
 FILE_NO_TEXT = '<FileNoText Mushroom>'
-
-
+FILE_NO_SUB_KEY = '<FileNoSubKey Mushroom>'
 
 class MushroomError(Exception):                                     # 参数错误类
     pass                                                            # 过
 
+def linker(file_name,link_text):
+    """内部函数，用于link双函数递归溯源"""
+    link_text = link_text[1:]                                       # 截取第二个字符及以后的字符
+    if ',' in link_text:                                            # 如果有“，”分隔符
+        link_text = link_text.split(',')                            # 分开
+        if len(link_text) == 3:                                     # 如果有三项
+            return(read_sheet(file_name,link_text[0],link_text[1],link_text[2]))# 用表读取函数
+    else:                                                           # 如果没有“，”分隔符
+        return(read(file_name,link_text))                           # 用字读取函数
 
 def view(file_name, value=False):
     """一个用于打开json的查看器"""
@@ -43,7 +51,6 @@ def view(file_name, value=False):
     if value:                                                       # 如果确认返回
         return(json_text)                                           # 返回json内容
 
-
 def write(file_name, key, value):
     """写json文件"""
     add_file = False                                                # 是否增加文件：否
@@ -61,7 +68,6 @@ def write(file_name, key, value):
             python_text[key] = value                                # 将字典普通赋值
             file.write(str(json.dumps(python_text)))                # 写整洁化的文件
     return(add_file)                                                # 返回是否增加了文件
-
 
 def read(file_name, key, language='python', link='@'):
     """读json文件"""
@@ -86,11 +92,19 @@ def read(file_name, key, language='python', link='@'):
         if key in python_text.keys():                               # 如果键在json的键中
             if isinstance(python_text[key], str):                   # 如果值是str
                 if python_text[key][0] == link[0]:                  # 如果str的值首字母是‘@’（必须是分开的，否则第二个if会并报错）
-                    return(read(file_name, python_text[key][1:], 'python', link))# 运用递归算法，寻求最终值
+                    return(linker(file_name,python_text[key]))      # 运用递归算法，寻求最终值
             return(python_text[key])                                # 返回这个键的值
         else:                                                       # 如果键不在json的键中
-            return({})                                              # 返回空字典
+            return(FILE_NO_SUB_KEY)                                 # 返回空字典
 
+def replace(file_name, key, in_key, in_value):
+    """替换键内字典或列表的指定键或项的内容"""
+    python_text = read(file_name,key)                               # 读取键的值
+    if isinstance(python_text,dict):                                # 如果为字典
+        python_text[str(in_key)] = in_value                         # 改变键的值
+    elif isinstance(python_text,list):                              # 如果为列表
+        python_text[int(in_key)] = in_value                         # 改变项的值
+    write(file_name,key,python_text)                                # 写入改变值
 
 def delete(file_name, key):
     """删除json指定键"""
@@ -108,7 +122,6 @@ def delete(file_name, key):
     with open(file_name, 'w', encoding='utf-8') as file:            # 打开文件
         file.write(str(json.dumps(python_text)))                    # 写整洁化的文件
 
-
 def write_sheet(file_name, key, row, col, value):
     """写json指定字典表"""
     row = str(row)                                                  # 化成字符串
@@ -120,14 +133,15 @@ def write_sheet(file_name, key, row, col, value):
         raise MushroomError("'" + file_name + "'" +
                             ' is not a correct file.')              # 报错
     else:                                                           # 如果不返回false
+        if python_text == FILE_NO_SUB_KEY:
+            python_text = read(file_name,all)
         if row in python_text:                                      # 如果行在dict_中
             python_text[row].update({col: value})                   # 直接在行里加列的字典
         else:                                                       # 否则
             python_text.update({row: {col: value}})                 # 同时加行与列
         write(file_name, key, python_text)                          # 写成品
 
-
-def read_sheet(file_name, key, row="", col=""):
+def read_sheet(file_name, key, row="", col="", link='@'):
     """读json指定字典表"""
     if row != all:                                                  # 如果不是all
         row = str(row)                                              # 化成字符串
@@ -149,13 +163,14 @@ def read_sheet(file_name, key, row="", col=""):
             for i in python_text.keys():                            # 循环所有键
                 col_list.append(python_text[i][row])                # 增加对应值
             return(list(col_list))                                  # 返回列表
+        elif isinstance(python_text[row][col], str):                # 如果是str类型
+            if python_text[row][col][0] == link[0]:                 # 如果link匹配
+                return(linker(file_name, python_text[row][col]))    # 返回linker函数自动溯源
         return(python_text[row][col])                               # 未被拦截则返回二维字典指定值
-
 
 def size(file_name):
     """取文件字节大小"""
     return(os.stat(file_name).st_size)                              # 调用库文件
-
 
 class mushroom():
     """面向对象式调用"""
@@ -171,11 +186,15 @@ class mushroom():
         """写json文件"""
         return(write(self.file_name, key, value))                   # 调用函数
 
+    def replace(self, key, in_key, in_value):
+        """替换键内字典或列表的指定键或项的内容"""
+        return(replace(self.file_name, key, in_key, in_value))      # 调用函数
+
     def delete(self, key):
         """删除json指定键"""
         return(delete(self.file_name, key))                         # 调用函数
 
-    def read_sheet(self, key, row=all, col=all):
+    def read_sheet(self, key, row=all, col=all, link='@'):
         """读json指定字典表"""
         return(read_sheet(self.file_name, key, row, col))           # 调用函数
 
