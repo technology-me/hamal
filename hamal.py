@@ -92,7 +92,7 @@ def read(file_name, key, language='python', link='@'):
     else:
         try:
             python_text = json.loads(file.read())
-        except JSONDebuger:
+        except JSONDecodeError:
             raise HamalError('The file cannot be decoded. Check the file name or contents.')
     if key == all:
         if language == 'python':
