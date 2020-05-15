@@ -90,7 +90,10 @@ def read(file_name, key, language='python', link='@'):
     if os.stat(file_name).st_size == 0:
         return(FILE_NO_TEXT)
     else:
-        python_text = json.loads(file.read())
+        try:
+            python_text = json.loads(file.read())
+        except JSONDebuger:
+            raise HamalError('The file cannot be decoded. Check the file name or contents.')
     if key == all:
         if language == 'python':
             # 以python字典打印
