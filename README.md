@@ -17,10 +17,12 @@ git clone https://github.com/technology-me/hamal.git
 1
 
   将`hamal.py`复制到您的项目中。
-  
+
   Put` hamal.py `Copy to your project.
+
 2
-  ```
+
+  ```python
   import hamal
   ```
 
