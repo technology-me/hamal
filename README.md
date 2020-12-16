@@ -28,10 +28,13 @@ git clone https://github.com/technology-me/hamal.git
 ```
 object = Hamal(file_name)
 ```
-`file_name` 为 文件名或其路径。<br/>
+
+`file_name` 为 文件名或其路径。
+
 `file_name` is the file name or its path.
 
-实例化一个文件对象。<br/>
+实例化一个文件对象。
+
 Instantiate a file object.
 
 ------
@@ -63,3 +66,9 @@ object.write(key,value)
 `key` is the key to be written.
 
 `value` is the value written.
+
+------
+```
+object.change(key,in_key,in_value)
+```
+
