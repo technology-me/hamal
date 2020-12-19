@@ -2,6 +2,8 @@
 
 # Hamal
 
+[Chinese](https://github.com/technology-me/hamal/blob/master/README.md)
+
 A library for reading and writing JSON data.
 
 ### Install Method
