@@ -1,10 +1,8 @@
 # 搬运工·Hamal
 
-[English]()
+[English](https://github.com/technology-me/hamal/blob/master/README.en.md)
 
 一个用来读写json数据的库。
-
-A library for reading and writing JSON data.
 
 ### 安装方法·Install Method
 
@@ -16,19 +14,15 @@ git clone https://github.com/technology-me/hamal.git
 
 #### 引入·Introduce
 
-1
+1. 将`hamal.py`复制到您的项目中。
 
-  将`hamal.py`复制到您的项目中。
+2. 引入
 
-  Put` hamal.py `Copy to your project.
+   ```python
+   import hamal
+   ```
 
-2
-
-  ```python
-  import hamal
-  ```
-
-### 特性
+### 特性·Characteristic
 
 #### 链接器·Linker
 
@@ -47,20 +41,6 @@ git clone https://github.com/technology-me/hamal.git
 
 你还可以用来表示一个JSON表内的值，其格式为`@KeyName,row,col `。
 
-Linker is a concept introduced by Hamal.
-You can store a value in a JSON file that starts with `@` or has been defined to point to other keys in this JSON file.
-
-```json
-{
-"a": "@b",
-"b": "Hello World"
-}
-```
-
-Make the value of `a` the value of `b`.
-
-You can also use it to represent values in a JSON table in the format `@KeyName,row,col`.
-
 ### 使用·Use
 
 #### 实例化·Instantiate
@@ -72,10 +52,6 @@ object = Hamal(file_name)
 `file_name` 为 文件名或其路径。
 
 实例化一个文件对象。
-
-`file_name` is the file name or its path.
-
-Instantiate a file object.
 
 ------
 
@@ -91,12 +67,6 @@ object.read(key,language='python',link='@')
 
 `link`为链接器识别符，用于跳转。
 
-`key` is the key in the JSON file (similar to ` dict`).(if `All` means all)
-
-`language` is the returned type. If it is`'Python'`, it will return a dictionary. If it is`'json'`, it will return a str, which is the content of JSON.
-
-`link` is the linker identifier, which is used to jump.
-
 ------
 #### write()
 
@@ -107,10 +77,6 @@ object.write(key,value)
 `key`为欲写入的键。（如果为`All`则表示全部）
 
 `value`为写入的值。
-
-`key` is the key to be written.(if `All` means all)
-
-`value` is the value written.
 
 ------
 #### change()
@@ -140,8 +106,6 @@ object.delete(key)
 
 `key`为欲删除的键。（如果为`All`则表示全部）
 
-`key` is the key to be deleted.(if `All` means all)
-
 ------
 
 #### view()
@@ -153,7 +117,3 @@ object.view(value=False)
 运行本函数，则可以打开一个简陋的Tkinter窗口来显示该JSON文件的内容。
 
 `value[=False]`为是否返回值，如果为`True`，则在控制台返回文件内容。如果为`False`或不填，则不返回。
-
-If you run this function, you can open a crude Tkinter window to display the contents of the JSON file.
-
-`Value [= false]` is whether to return the value. If it is `True`, the file content will be returned in the console. If it is`False` or not filled in, it will not be returned.
