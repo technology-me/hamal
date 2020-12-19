@@ -1,5 +1,7 @@
 # 搬运工·Hamal
 
+[English]()
+
 一个用来读写json数据的库。
 
 A library for reading and writing JSON data.
@@ -25,6 +27,39 @@ git clone https://github.com/technology-me/hamal.git
   ```python
   import hamal
   ```
+
+### 特性
+
+#### 链接器·Linker
+
+链接器是Hamal引入的一个概念。
+
+你可以在JSON文件中储存一个以`@`或已定义的以其他文字开头的值，来指向本JSON文件的其他键。
+
+```json
+{
+"a":"@b",
+"b":"Hello World"
+}
+```
+
+则使`a`的值为`b`的值。
+
+你还可以用来表示一个JSON表内的值，其格式为`@KeyName,row,col `。
+
+Linker is a concept introduced by Hamal.
+You can store a value in a JSON file that starts with `@` or has been defined to point to other keys in this JSON file.
+
+```json
+{
+"a": "@b",
+"b": "Hello World"
+}
+```
+
+Make the value of `a` the value of `b`.
+
+You can also use it to represent values in a JSON table in the format `@KeyName,row,col`.
 
 ### 使用·Use
 
@@ -122,37 +157,3 @@ object.view(value=False)
 If you run this function, you can open a crude Tkinter window to display the contents of the JSON file.
 
 `Value [= false]` is whether to return the value. If it is `True`, the file content will be returned in the console. If it is`False` or not filled in, it will not be returned.
-
-------
-
-#### 链接器·Linker
-
-链接器是Hamal引入的一个概念。
-
-你可以在JSON文件中储存一个以`@`或已定义的以其他文字开头的值，来指向本JSON文件的其他键。
-
-```json
-{
-"a":"@b",
-"b":"Hello World"
-}
-```
-
-则使`a`的值为`b`的值。
-
-你还可以用来表示一个JSON表内的值，其格式为`@KeyName,row,col `。
-
-
-
-Linker is a concept introduced by Hamal.
-You can store a value in a JSON file that starts with `@` or has been defined to point to other keys in this JSON file.
-
-```json
-{
-"a": "@b",
-"b": "Hello World"
-}
-```
-Make the value of `a` the value of `b`.
-
-You can also use it to represent values in a JSON table in the format `@KeyName,row,col`.
