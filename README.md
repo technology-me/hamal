@@ -91,12 +91,6 @@ object.change(key,in_key,in_value)
 
 `in_value`为为该键内欲替换的键的值。
 
-`key` is the key to be changed.(if `All` means all)
-
-`in_key` is the key to be replaced in the key.
-
-`in_value` is the value of the key to be replaced in the key.
-
 ------
 #### delete()
 
