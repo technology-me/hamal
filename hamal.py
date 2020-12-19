@@ -2,6 +2,7 @@ import json
 import os
 import base64
 from tkinter import *
+from json import JSONDecodeError
 
 FILE_NOT_FOUND = '<FileNotFound Hamal>'
 FILE_NO_TEXT = '<FileNoText Hamal>'

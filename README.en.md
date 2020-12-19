@@ -1,20 +1,19 @@
 
-
 # Hamal
 
 [Chinese](https://github.com/technology-me/hamal/blob/master/README.md)
 
 A library for reading and writing JSON data.
 
-### Install Method
+## Install Method
 
-#### Download
+### Download
 
 ```git
 git clone https://github.com/technology-me/hamal.git
 ```
 
-#### Introduce
+### Introduce
 
 1. Put `Hamal.py` Copy to your project.
 
@@ -24,9 +23,9 @@ git clone https://github.com/technology-me/hamal.git
    import hamal
    ```
 
-### Characteristic
+## Characteristic
 
-#### Linker
+### Linker
 
 Linker is a concept introduced by Hamal.
 You can store a value in a JSON file that starts with `@` or has been defined to point to other keys in this JSON file.
@@ -42,9 +41,9 @@ Make the value of `a` the value of `b`.
 
 You can also use it to represent values in a JSON table in the format `@KeyName,Row,Col`.
 
-### Use
+## Use
 
-#### Instantiate
+### Instantiate
 
 ```python
 object = Hamal(file_name)
@@ -56,20 +55,21 @@ Instantiate a file object.
 
 ------
 
-#### read()
+### read()
 
 ```python
 object.read(key,language='python',link='@')
 ```
 
-`key` is the key in the JSON file (similar to ` dict`).(if `All` means all)
+`key` is the key in the JSON file (similar to `dict`).(if `All` means all)
 
 `language` is the returned type. If it is`'Python'`, it will return a dictionary. If it is`'json'`, it will return a str, which is the content of JSON.
 
 `link` is the linker identifier, which is used to jump.
 
 ------
-#### write()
+
+### write()
 
 ```python
 object.change(key,in_key,in_value)
@@ -81,7 +81,7 @@ object.change(key,in_key,in_value)
 
 ------
 
-#### change()
+### change()
 
 ```python
 object.change(key,in_key,in_value)
@@ -95,7 +95,7 @@ object.change(key,in_key,in_value)
 
 ------
 
-#### delete()
+### delete()
 
 ```python
 object.delete(key)
@@ -105,7 +105,7 @@ object.delete(key)
 
 ------
 
-#### view()
+### view()
 
 ```python
 object.view(value=False)

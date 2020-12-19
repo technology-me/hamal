@@ -4,15 +4,15 @@
 
 一个用来读写json数据的库。
 
-### 安装方法·Install Method
+## 安装方法·Install Method
 
-#### 下载·Download
+### 下载·Download
 
 ```git
 git clone https://github.com/technology-me/hamal.git
 ```
 
-#### 引入·Introduce
+### 引入·Introduce
 
 1. 将`hamal.py`复制到您的项目中。
 
@@ -22,9 +22,9 @@ git clone https://github.com/technology-me/hamal.git
    import hamal
    ```
 
-### 特性·Characteristic
+## 特性·Characteristic
 
-#### 链接器·Linker
+### 链接器·Linker
 
 链接器是Hamal引入的一个概念。
 
@@ -39,11 +39,11 @@ git clone https://github.com/technology-me/hamal.git
 
 则使`a`的值为`b`的值。
 
-你还可以用来表示一个JSON表内的值，其格式为`@KeyName,row,col `。
+你还可以用来表示一个JSON表内的值，其格式为`@KeyName,row,col`。
 
-### 使用·Use
+## 使用·Use
 
-#### 实例化·Instantiate
+### 实例化·Instantiate
 
 ```python
 object = Hamal(file_name)
@@ -55,7 +55,7 @@ object = Hamal(file_name)
 
 ------
 
-#### read()
+### read()
 
 ```python
 object.read(key,language='python',link='@')
@@ -68,7 +68,8 @@ object.read(key,language='python',link='@')
 `link`为链接器识别符，用于跳转。
 
 ------
-#### write()
+
+### write()
 
 ```python
 object.write(key,value)
@@ -79,7 +80,8 @@ object.write(key,value)
 `value`为写入的值。
 
 ------
-#### change()
+
+### change()
 
 ```python
 object.change(key,in_key,in_value)
@@ -92,7 +94,8 @@ object.change(key,in_key,in_value)
 `in_value`为为该键内欲替换的键的值。
 
 ------
-#### delete()
+
+### delete()
 
 ```python
 object.delete(key)
@@ -102,7 +105,7 @@ object.delete(key)
 
 ------
 
-#### view()
+### view()
 
 ```python
 object.view(value=False)
